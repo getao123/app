@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.appsys.mapper.backenduser.Backend_userMapper">
+	<select id="getBackendUser" resultType="Backend_user" parameterType="String">
+			SELECT u.*,d.valueName FROM backend_user u,data_dictionary d 
+			WHERE
+			u.userType=d.valueId 
+			AND d.typeCode='USER_TYPE' 
+		<if test="userCode!=null">
+		AND u.userCode=#{userCode}
+		</if>
+	</select>
+</mapper>

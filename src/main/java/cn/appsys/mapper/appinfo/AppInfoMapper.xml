@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.appsys.mapper.appinfo.AppInfoMapper">
+	
+	<select id="getAppInfoList" resultType="App_info">
+		SELECT * FROM app_info as a
+		<trim prefix="where" prefixOverrides="and | or">
+				<if test="softwareName != null and softwareName != ''">
+					and a.softwareName like CONCAT ('%',#{softwareName},'%')
+				</if>
+				<if test="categoryLevel1 != null">
+					and a.categoryLevel1 = #{categoryLevel1}
+				</if>
+				<if test="categoryLevel2 != null">
+					and a.categoryLevel2 = #{categoryLevel2}
+				</if>
+				<if test="categoryLevel3 != null">
+					and a.categoryLevel3 = #{categoryLevel3}
+				</if>
+				<if test="flatformId != null">
+					and a.flatformId = #{flatformId}
+				</if>
+				<if test="devId != null">
+					and a.devId = #{devId}
+				</if>
+				<if test="status !=null">
+					and status =#{status}
+				</if>
+			</trim>
+			order by creationDate desc limit #{from},#{pageSize}
+	</select>
+	
+	<select id="getAppInfoCount" resultType="Int">
+		select count(*) as count from app_info a
+			<trim prefix="where" prefixOverrides="and | or">
+				<if test="softwareName != null and softwareName != ''">
+					and a.softwareName like CONCAT ('%',#{softwareName},'%')
+				</if>
+				<if test="categoryLevel1 != null">
+					and a.categoryLevel1 = #{categoryLevel1}
+				</if>
+				<if test="categoryLevel2 != null">
+					and a.categoryLevel2 = #{categoryLevel2}
+				</if>
+				<if test="categoryLevel3 != null">
+					and a.categoryLevel3 = #{categoryLevel3}
+				</if>
+				<if test="flatformId != null">
+					and a.flatformId = #{flatformId}
+				</if>
+				<if test="devId != null">
+					and a.devId = #{devId}
+				</if>
+				<if test="status !=null">
+					and status =#{status}
+				</if>
+			</trim>
+	</select>
+	<select id="getAppInfo" resultType="App_info">
+		SELECT * FROM app_info WHERE id=#{aId}
+	</select>
+	<select id="getAppInfoAPKName" resultType="App_info">
+		SELECT * FROM app_info WHERE APKName=#{APKName}
+	</select>
+	<update id="updateStatus">
+		UPDATE 
+			appinfodb.app_info
+		SET
+  			status = #{status}
+		WHERE id = #{id} 
+	</update>
+	<update id="updateOnSaleDate">
+		UPDATE 
+			appinfodb.app_info
+		<trim prefix="set" suffixOverrides="," suffix="where id=#{id}">
+  			<if test="status!=null">
+  			status = #{status},
+  			</if>
+  			<if test="onSaleDate!=null">
+  				onSaleDate=#{onSaleDate},
+  			</if>
+  			<if test="offSaleDate!=null">
+  				offSaleDate=#{offSaleDate},
+  			</if>
+  			<if test="modifyBy!=null">
+  				modifyBy=#{modifyBy}
+  			</if>
+  			</trim>
+	</update>
+	<update id="updateAppId">
+		UPDATE 
+  				appinfodb.app_version 
+  				<trim prefix="SET" suffixOverrides=",">
+  					versionInfo =#{versionInfo}
+  					<if test="versionSize!=0">
+ 					versionSize = #{versionSize}
+ 					</if>
+ 				</trim>
+			WHERE  appId = #{appId};
+	</update>
+	<update id="updateVersionId">
+		UPDATE 
+  			appinfodb.app_info
+		SET
+ 			 versionId = #{versionId},
+ 			 status=#{status}
+		WHERE id = #{id};
+	</update>
+	
+	<insert id="add" parameterType="App_info">
+		insert into app_info (softwareName,APKName,supportROM,interfaceLanguage,updateDate,softwareSize,
+							devId,appInfo,status,onSaleDate,offSaleDate,categoryLevel1,categoryLevel2,
+							categoryLevel3,downloads,flatformId,logoPicPath,logoLocPath,createdBy,creationDate)
+				values(#{softwareName},#{APKName},#{supportROM},#{interfaceLanguage},#{updateDate},
+					   #{softwareSize},#{devId},#{appInfo},#{status},#{onSaleDate},#{offSaleDate},
+					   #{categoryLevel1},#{categoryLevel2},#{categoryLevel3},#{downloads},
+					   #{flatformId},#{logoPicPath},#{logoLocPath},#{createdBy},#{creationDate})
+	</insert>
+	<update id="modify" parameterType="App_info">
+		update app_info
+		<trim prefix="set" suffixOverrides="," suffix="where id=#{id}">
+			<if test="softwareName != null">softwareName=#{softwareName},</if>
+			<!-- <if test="APKName != null">APKName=#{APKName},</if> -->
+			<if test="supportROM != null">supportROM=#{supportROM},</if>
+			<if test="interfaceLanguage != null">interfaceLanguage=#{interfaceLanguage},</if>
+			<if test="updateDate != null">updateDate=#{updateDate},</if>
+			<if test="softwareSize != null">softwareSize=#{softwareSize},</if>
+			<if test="appInfo != null">appInfo=#{appInfo},</if>
+			<if test="status != null">status=#{status},</if>
+			<if test="onSaleDate != null">onSaleDate=#{onSaleDate},</if>
+			<if test="offSaleDate != null">offSaleDate=#{offSaleDate},</if>
+			<if test="categoryLevel1 != null">categoryLevel1=#{categoryLevel1},</if>
+			<if test="categoryLevel2 != null">categoryLevel2=#{categoryLevel2},</if>
+			<if test="categoryLevel3 != null">categoryLevel3=#{categoryLevel3},</if>
+			<if test="downloads != null">downloads=#{downloads},</if>
+			<if test="flatformId != null">flatformId=#{flatformId},</if>
+			<if test="logoPicPath != null">logoPicPath=#{logoPicPath},</if>
+			<if test="logoLocPath != null">logoLocPath=#{logoLocPath},</if>
+			<if test="modifyBy != null">modifyBy=#{modifyBy},</if>
+			<if test="modifyDate != null">modifyDate=#{modifyDate}</if>
+		</trim>
+	</update>
+	<update id="updateFile">
+		UPDATE 
+  			appinfodb.app_info 
+		SET
+  			logoPicPath = NULL,
+  			logoLocPath = NULL
+		WHERE id= #{id} ;
+	</update>
+	<delete id="deleteAppInfoById">
+		delete from app_info where id = #{id}
+	</delete>
+</mapper>

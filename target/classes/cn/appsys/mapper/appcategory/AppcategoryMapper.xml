@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.appsys.mapper.appcategory.AppcategoryMapper">
+	<select id="getAppCategoryListByParentId" resultType="App_category">
+		SELECT * FROM app_category
+		<trim prefixOverrides="and/or" prefix="WHERE">
+		<if test="parentId==null">
+			 parentId IS NULL
+		</if>
+		<if test="parentId!=null">
+		 	parentId=#{parentId}
+		 </if>
+		</trim>
+	</select>
+	<select id="getAppCategoryList" resultType="App_category">
+		select * from app_category
+	</select>
+</mapper>
